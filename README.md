@@ -8,3 +8,20 @@ follow the README.md
 * 03 - basic intro to OTP, genservers and ets
 * 04 - reddit API and fetching from it
 * 05 - displaying the results
+
+1) __Install phoenix__
+  ```mix archive.install https://github.com/phoenixframework/archives/raw/master/phx_new.ez```
+
+2) __Create new phoenix application__
+  ```
+    mix phx.new <app_name>
+  ```
+
+3) __To start your Phoenix server:__
+
+  * Install dependencies with `mix deps.get`
+  * Create and migrate your database with `mix ecto.create && mix ecto.migrate`
+  * Install Node.js dependencies with `cd assets && npm install`
+  * Start Phoenix endpoint with `mix phx.server`
+
+Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
