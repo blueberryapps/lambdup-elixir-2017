@@ -37,3 +37,34 @@ Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
           |_ templates
           |_ views
           |_ router.ex
+
+5) __Creating Search Content__
+  Run `mix phx.gen.html Redit Search searches`
+  Then `mix ecto.migrate`
+  Then add `resources "/searches", SearchController` to router.ex
+
+    
+    Now we need to cleanup the generated stuff,
+  in the controller remove all actions except `index, create, new`
+
+    In the newly created redit.ex file ( `elixir_workshop_2017/redit/redit.ex`) remove all except the following methods:
+    
+  
+    ```
+    list_searches
+    get_search
+    create_search
+    change_search
+    ```
+6) __Add search form__
+    <br />
+
+    Create a search form inside `page/index.html.eex`:
+    
+
+    ```
+    <%= form_for @conn, search_path(@conn, :new), [as: :search, method: :get], fn f -> %>
+        <%= text_input f, :query %>
+        <%= submit "Search for subredits" %>
+      <% end %>
+    ```

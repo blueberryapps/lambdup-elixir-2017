@@ -1,0 +1,8 @@
+<h2>Show Search</h2>
+
+<ul>
+
+</ul>
+
+<span><%= link "Edit", to: search_path(@conn, :edit, @search) %></span>
+<span><%= link "Back", to: search_path(@conn, :index) %></span>
