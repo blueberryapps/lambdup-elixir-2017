@@ -25,3 +25,15 @@ follow the README.md
   * Start Phoenix endpoint with `mix phx.server`
 
 Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
+
+4) __Phoenix structure__
+
+      `lib`
+
+        |_ elixir_workshop_2017 <- business logic
+          |_ application.ex
+        |_ elixir_workshop_2017_web <- controllers, router, templates goes here
+          |_ controllers
+          |_ templates
+          |_ views
+          |_ router.ex
