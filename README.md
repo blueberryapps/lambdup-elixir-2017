@@ -5,66 +5,84 @@ follow the README.md
 
 * 01 - workshop and elixir introduction
 * 02 - setting up phoenix 1.3 and its structure
-* 03 - basic intro to OTP, genservers and ets
+* __03 - basic intro to OTP, genservers and ets__
 * 04 - reddit API and fetching from it
 * 05 - displaying the results
 
-1) __Install phoenix__
-  ```mix archive.install https://github.com/phoenixframework/archives/raw/master/phx_new.ez```
+1) __What is OTP ?__
+> OTP stands for Open Telecom Platform, although it's not that much about telecom anymore, we could say that its from the softwere that has a properties of a telecom application. Generally speaking OTP is nothing more then a set of abstract libraries for playing with elixir processes.
 
-2) __Create new phoenix application__
-  ```
-    mix phx.new <app_name>
-  ```
+In this workshop we won't dive too much into how OTP works. (It would take us much more time), but we will run through the basics
 
-3) __To start your Phoenix server:__
+2) [Process](http://elixir-lang.github.io/getting-started/processes.html)
 
-  * Install dependencies with `mix deps.get`
-  * Create and migrate your database with `mix ecto.create && mix ecto.migrate`
-  * Install Node.js dependencies with `cd assets && npm install`
-  * Start Phoenix endpoint with `mix phx.server`
+> In Elixir, all code runs inside processes. Processes are isolated from each other, run concurrent to one another and communicate via message passing. Processes are not only the basis for concurrency in Elixir, but they also provide the means for building distributed and fault-tolerant programs.
 
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
+> Most important methods implemented in Process module are: `spawn, send, receive`
 
-4) __Phoenix structure__
+```
+iex> pid = spawn fn -> 1 + 2 end
+#PID<0.44.0>
+iex> Process.alive?(pid)
+false
+```
 
-      `lib`
+```
+iex> send self(), {:hello, "world"}
+{:hello, "world"}
+iex> receive do
+...>   {:hello, msg} -> msg
+...>   {:world, msg} -> "won't match"
+...> end
+"world"
+```
 
-        |_ elixir_workshop_2017 <- business logic
-          |_ application.ex
-        |_ elixir_workshop_2017_web <- controllers, router, templates goes here
-          |_ controllers
-          |_ templates
-          |_ views
-          |_ router.ex
+3) [Genserver](https://hexdocs.pm/elixir/GenServer.html)
 
-5) __Creating Search Content__
-  Run `mix phx.gen.html Redit Search searches`
-  Then `mix ecto.migrate`
-  Then add `resources "/searches", SearchController` to router.ex
+> A GenServer is a process like any other Elixir process and it can be used to keep state, execute code asynchronously and so on. The advantage of using a generic server process (GenServer) implemented using this module is that it will have a standard set of interface functions and include functionality for tracing and error reporting. It will also fit into a supervision tree.
 
-    
-    Now we need to cleanup the generated stuff,
-  in the controller remove all actions except `index, create, new`
+Example: 
 
-    In the newly created redit.ex file ( `elixir_workshop_2017/redit/redit.ex`) remove all except the following methods:
-    
-  
-    ```
-    list_searches
-    get_search
-    create_search
-    change_search
-    ```
-6) __Add search form__
-    <br />
+```
+defmodule Stack do
+  use GenServer
 
-    Create a search form inside `page/index.html.eex`:
-    
+  # API
 
-    ```
-    <%= form_for @conn, search_path(@conn, :new), [as: :search, method: :get], fn f -> %>
-        <%= text_input f, :query %>
-        <%= submit "Search for subredits" %>
-      <% end %>
-    ```
+  def pop(pid) do
+    GenServer.call(pid, :pop)
+  end
+
+  def push(pid, state) do
+    GenServer.cast(pid, {:push, state})
+  end
+
+  # Callbacks
+
+  def handle_call(:pop, _from, [h | t]) do
+    {:reply, h, t}
+  end
+
+  def handle_cast({:push, item}, state) do
+    {:noreply, [item | state]}
+  end
+end
+
+# Start the server
+{:ok, pid} = GenServer.start_link(Stack, [:hello])
+
+# This is the client
+Stack.pop(pid)
+#=> :hello
+
+Stack.push(pid, :world)
+#=> :ok
+
+Stack.pop(pid)
+#=> :world
+```
+If we disect a genserver we can see that it is put together from two disctinct parts: the API and the callbacks. Basically we communicate with the genserver by calling API methods which triggers callbacks where our logic lies. As you can see from the API methods we are basically calling some modules implemented in the GenServer module. THe most important ones are the following: 
+
+GenServer.call - triggers a handle_call a which is a blocking sync method, so we will use it when we want to block the genserver until the result arive
+
+GenServer.cast - triggers a handle_cast callback which is an async method and we are using it when we don't care when the result will arrive
