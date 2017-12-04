@@ -13,7 +13,7 @@ defmodule ElixirWorkshop2017.Application do
       # Start the endpoint when the application starts
       supervisor(ElixirWorkshop2017Web.Endpoint, []),
       # Start your own worker by calling: ElixirWorkshop2017.Worker.start_link(arg1, arg2, arg3)
-      # worker(ElixirWorkshop2017.Worker, [arg1, arg2, arg3]),
+      worker(ElixirWorkshop2017.Redit.ApiGenServer, []),
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

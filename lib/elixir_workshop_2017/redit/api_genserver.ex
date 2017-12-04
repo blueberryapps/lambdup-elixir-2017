@@ -3,7 +3,7 @@ defmodule ElixirWorkshop2017.Redit.ApiGenServer do
   alias ElixirWorkshop2017.Utils.Http.Request
 
   ## API
-  def start_link(_) do
+  def start_link() do
     GenServer.start_link(__MODULE__, nil, [name: :api_gen_server])
   end
 
