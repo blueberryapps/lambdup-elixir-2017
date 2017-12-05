@@ -1,8 +1,10 @@
-<h2>Show Search</h2>
-
-<ul>
-
-</ul>
-
-<span><%= link "Edit", to: search_path(@conn, :edit, @search) %></span>
-<span><%= link "Back", to: search_path(@conn, :index) %></span>
+<h2>Reddit Posts</h2>
+  <%= Enum.map(@grouped_posts, fn(group) -> %>
+    <h2><%= group |> elem(0)  %></h2>
+    <br />
+    <%= group |> elem(1) |> Enum.map(fn(post) -> %>
+      <%= link(post.title, to: "https://www.reddit.com#{post.link}") %>
+      <p><%= post.author %></p>
+    <% end)%>
+    <br />
+  <% end)%>

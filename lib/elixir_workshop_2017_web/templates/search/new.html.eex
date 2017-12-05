@@ -1,5 +1,11 @@
 <h2>Subscribe to topics</h2>
 
-<%= render "form.html", Map.put(assigns, :action, search_path(@conn, :create)) %>
-
+<%= form_for @conn, search_path(@conn, :create), fn f -> %>
+    <%= Enum.map(@topics, fn(topic) -> %>
+      <%= topic %>
+      <%= checkbox(f, :"#{topic}") %>
+      <br />
+    <% end) %>
+    <%= submit "Subscribe for topics" %>
+<% end %>
 <span><%= link "Back", to: search_path(@conn, :index) %></span>
